@@ -1,31 +1,26 @@
 #!/bin/bash
 
+LOGFILE=$1
+KEYWORD=${2:-"error"}   # Default keyword is "error" if not provided
+COUNT=0
 
-input_file="$1"
-search_term="${2:-error}"   # Default keyword: error
-match_count=0
-
-# Function to print divider
-separator() {
-    echo "---------------------------------------------"
-}
-
-
-if [[ ! -f "$input_file" ]]; then
-    echo "Error: File '$input_file' not found."
+# Check if the log file exists
+if [ ! -f "$LOGFILE" ]; then
+    echo "Error: File $LOGFILE not found."
     exit 1
 fi
 
-# Process file and count matches
-while read -r line_content; do
-    if grep -qi "$search_term" <<< "$line_content"; then
-        ((match_count++))
+# Read the file line by line and count matches
+while IFS= read -r LINE; do
+    if echo "$LINE" | grep -iq "$KEYWORD"; then
+        COUNT=$((COUNT + 1))
     fi
-done < "$input_file"
+done < "$LOGFILE"
 
-echo "Keyword '$search_term' found $match_count times in $input_file"
+echo "Keyword '$KEYWORD' found $COUNT times in $LOGFILE"
 
-separator
+# Show the last 5 matching lines for context
+echo "---------------------------------------------"
 echo "Last 5 occurrences:"
-grep -i "$search_term" "$input_file" | tail -n 5
-separator
+grep -i "$KEYWORD" "$LOGFILE" | tail -5
+echo "---------------------------------------------"
