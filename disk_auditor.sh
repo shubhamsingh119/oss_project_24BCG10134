@@ -1,39 +1,26 @@
 #!/bin/bash
 
-# Directories to analyze
-paths=("/etc" "/var/log" "/home" "/usr/bin" "/tmp")
+# List of directories to check
+DIRS=("/etc" "/var/log" "/home" "/usr/bin" "/tmp")
 
-# Function to print header/footer
-draw_line() {
-    echo "---------------------------------------------"
-}
-
-draw_line
+echo "---------------------------------------------"
 echo "   Directory Audit Report."
-draw_line
+echo "---------------------------------------------"
 
-# Iterate through directories
-for path in "${paths[@]}"; do
-    if [[ -d "$path" ]]; then
-        
-        access_info=$(ls -ld "$path" | awk '{print $1, $3, $4}')
-        
-        dir_size=$(du -sh "$path" 2>/dev/null | awk '{print $1}')
-        
-        printf "%-12s => Permissions: %s | Size: %s\n" "$path" "$access_info" "$dir_size"
+# Loop through each directory and print details
+for DIR in "${DIRS[@]}"; do
+    if [ -d "$DIR" ]; then
+        PERMS=$(ls -ld $DIR | awk '{print $1, $3, $4}')   # Permissions, owner, group
+        SIZE=$(du -sh $DIR 2>/dev/null | cut -f1)         # Human-readable size
+        echo "$DIR => Permissions: $PERMS | Size: $SIZE"
     else
-        echo "$path does not exist on this system."
+        echo "$DIR does not exist on this system"
     fi
 done
 
-# Additional check for Python config directory
-config_dir="/etc/python3"
-
-if [[ -d "$config_dir" ]]; then
-    config_info=$(ls -ld "$config_dir" | awk '{print $1, $3, $4}')
-    echo "$config_dir exists => $config_info"
+# Extra check for Python configuration directory
+if [ -d "/etc/python3" ]; then
+    echo "/etc/python3 exists => $(ls -ld /etc/python3 | awk '{print $1, $3, $4}')"
 else
     echo "Python config directory not found."
 fi
-
-draw_line
