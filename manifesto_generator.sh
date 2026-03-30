@@ -1,28 +1,22 @@
 #!/bin/bash
 
-echo "Please answer the following to generate your manifesto:"
-echo
+echo "Answer three questions to generate your manifesto."
+echo ""
 
-# Take user inputs
-read -p "1. Mention one open-source tool you use daily: " tool_name
-read -p "2. What does 'freedom' mean to you (one word)? " freedom_word
-read -p "3. What would you like to create and share openly? " build_item
+# Collect user input
+read -p "1. Name one open-source tool you use every day: " TOOL
+read -p "2. In one word, what does 'freedom' mean to you? " FREEDOM
+read -p "3. Name one thing you would build and share freely: " BUILD
 
-# Generate date and filename
-current_date=$(date +"%d %B %Y")
-file_name="manifesto_$(id -un).txt"
+DATE=$(date '+%d %B %Y')
+OUTPUT="manifesto_$(whoami).txt"
 
-# Function to write manifesto
-create_manifesto() {
-    echo "On $current_date, I present my open-source manifesto." > "$file_name"
-    echo "Using $tool_name regularly reminds me that $freedom_word is vital." >> "$file_name"
-    echo "I aspire to create $build_item and contribute it freely to everyone." >> "$file_name"
-}
+# Write the manifesto to a text file
+echo "On $DATE, I declare my open-source manifesto." > $OUTPUT
+echo "I use $TOOL daily, which reminds me that $FREEDOM is essential." >> $OUTPUT
+echo "In the spirit of open source, I would build $BUILD and share it freely." >> $OUTPUT
 
-# Create file and display output
-create_manifesto
-
-echo "Manifesto saved to $file_name"
+echo "Manifesto saved to $OUTPUT"
 echo "---------------------------------------------"
-cat "$file_name"
+cat $OUTPUT
 echo "---------------------------------------------"
